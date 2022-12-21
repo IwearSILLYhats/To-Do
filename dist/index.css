@@ -1,0 +1,122 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+html{
+    height: 100%;
+    width: 100%;
+    --main-color: white;
+    --main-text: black;
+    --secondary-color: #ebecec;
+    --secondary-highlight: #d1d1d1;
+    --secondary-text: black;
+    --accent-color: ;
+    --header-color: grey;
+    --logo-primary: rgb(240, 88, 88);
+    --logo-secondary: rgb(47, 151, 125);
+
+}
+html.dark{
+    --main-color: #303030;
+    --main-text: lightgrey;
+    --secondary-color: rgb(30, 30, 30);
+    --secondary-highlight: rgb(45, 45, 45);
+    --secondary-text: lightgrey;
+    --header-color: grey;
+}
+
+body{
+    width: 100%;
+    height: 100%;
+    color: var(--main-text);
+    background-color: var(--main-color);
+    display: flex;
+    flex-direction: row;
+}
+.nav{
+    height: 100%;
+    background-color: var(--secondary-color);
+    color: var(--secondary-text);
+    display: flex;
+    flex-direction: column;
+    width: 1fr;
+    padding: .5rem .5rem 0 .5rem;
+}
+.main{
+    width: 3fr;
+}
+.switch{
+    position: relative;
+    display: inline-block;
+    height: fit-content;
+    width: 5rem;
+}
+.slider{
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: var(--logo-primary);
+    transition: background-color .4s ease-in-out;
+    border-radius: 15px;
+}
+.slider::before{
+    background-color: var(--logo-secondary);
+    position: absolute;
+    content: '';
+    height: 1.25rem;
+    width: 1.25rem;
+    inset: auto 80% auto 10%;
+    transition: inset .4s ease-in-out,
+                background-color .4s ease-in-out;
+    border-radius: 50%;
+}
+input:checked + .slider::before{
+    background-color: var(--logo-primary);
+    left: 65%;
+    right: 0;
+}
+input:checked + .slider{
+    background-color: var(--logo-secondary);
+}
+input[type="checkbox"]{
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.list, .list > div, .list div label{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.list input + ul{
+    display: none;
+}
+.list div input:checked + ul{
+    display: block;
+}
+.list label:hover, .list label:focus{
+    background-color: var(--secondary-highlight);
+    border-radius: 3px;
+}
+.list span::before{
+    content: ' || ';
+}
+li{
+    padding-left: 1rem;
+}
