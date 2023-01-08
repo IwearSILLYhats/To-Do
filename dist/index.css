@@ -14,6 +14,7 @@ time, mark, audio, video {
 	margin: 0;
 	padding: 0;
 	border: 0;
+    box-sizing: border-box;
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
@@ -46,16 +47,19 @@ body{
     height: 100%;
     color: var(--main-text);
     background-color: var(--main-color);
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: auto 2rem;
+
+}
+body > :nth-child(odd){
+    background-color: var(--secondary-color);
+    color: var(--secondary-text);
 }
 .nav{
     height: 100%;
-    background-color: var(--secondary-color);
-    color: var(--secondary-text);
     display: flex;
     flex-direction: column;
-    width: 1fr;
     padding: .5rem .5rem 0 .5rem;
 }
 .main{
@@ -68,6 +72,7 @@ body{
     width: 5rem;
 }
 .slider{
+    border: 2px solid var(--logo-secondary);
     position: absolute;
     cursor: pointer;
     inset: 0;
@@ -79,8 +84,8 @@ body{
     background-color: var(--logo-secondary);
     position: absolute;
     content: '';
-    height: 1.25rem;
-    width: 1.25rem;
+    height: 1rem;
+    width: 1rem;
     inset: auto 80% auto 10%;
     transition: inset .4s ease-in-out,
                 background-color .4s ease-in-out;
@@ -93,6 +98,7 @@ input:checked + .slider::before{
 }
 input:checked + .slider{
     background-color: var(--logo-secondary);
+    border: 2px solid var(--logo-primary);
 }
 input[type="checkbox"]{
     opacity: 0;
@@ -119,4 +125,46 @@ input[type="checkbox"]{
 }
 li{
     padding-left: 1rem;
+}
+footer {
+    border-top: 1px solid rgba(211, 211, 211, .5);
+}
+footer{
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+}
+footer button{
+    width: fit-content;
+    color: var(--main-text);
+    border: none;
+    border-radius: 3px;
+    background-color: var(--secondary-color);
+    margin: .2rem;
+}
+footer button:hover{
+    filter: brightness(1.1);
+}
+.newEvent{
+    height: fit-content;
+    width: 100%;
+    padding: .5rem;
+    background-color: var(--secondary-color);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: -23rem;
+    border: 1px solid var(--secondary-highlight);
+    overflow: hidden;
+    transition: height 2s ease-in-out;
+}
+.hidden{
+    height: 0rem;
+    padding: 0;
+    border: none;
+    transition: height 2s ease-in-out;
+}
+textarea{
+    resize: none;
 }
