@@ -146,7 +146,7 @@ footer button:hover{
     filter: brightness(1.1);
 }
 .newEvent{
-    height: fit-content;
+    height: 23rem;
     width: 100%;
     padding: .5rem;
     background-color: var(--secondary-color);
@@ -154,16 +154,19 @@ footer button:hover{
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: -23rem;
-    border: 1px solid var(--secondary-highlight);
-    overflow: hidden;
-    transition: height 2s ease-in-out;
+    bottom: 2rem;
+    overflow: scroll;
+    transition: height .3s ease-in-out;
+}
+.newEvent input{
+    height: 1.2rem;
 }
 .hidden{
+    overflow: hidden;
     height: 0rem;
     padding: 0;
     border: none;
-    transition: height 2s ease-in-out;
+    transition: height .3s ease-in-out;
 }
 textarea{
     resize: none;
