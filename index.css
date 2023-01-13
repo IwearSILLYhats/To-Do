@@ -116,7 +116,7 @@ input[type="checkbox"]{
 .list div input:checked + ul{
     display: block;
 }
-.list label:hover, .list label:focus{
+.list label:hover, .list label:focus, .list li:hover{
     background-color: var(--secondary-highlight);
     border-radius: 3px;
 }
@@ -146,7 +146,6 @@ footer button:hover{
     filter: brightness(1.1);
 }
 .newEvent{
-    height: 23rem;
     width: 100%;
     padding: .5rem;
     background-color: var(--secondary-color);
