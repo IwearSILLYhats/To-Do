@@ -4,6 +4,10 @@ function toggleEvents(){
     const newBtn = document.querySelector('.new');
     const eventForm = document.querySelector('.newEvent');
 
+    function classToggle(target, tglClass, state){
+        target.classList.toggle(tglClass, state);
+    }
+
     darkModeToggle.addEventListener('change', (e) => { 
         classToggle(page, 'dark', darkModeToggle.checked);
     });
@@ -14,20 +18,17 @@ function toggleEvents(){
     });
     newBtn.addEventListener('click', (e) => {
         classToggle(eventForm, 'hidden');
-        console.log('test');
     });
 }
 
-function classToggle(target, tglClass, state){
-    target.classList.toggle(tglClass, state);
-}
+
 class ListItem {
-    constructor(name, dates, notes,subItem, category){
+    constructor(name, dates, notes){
         this.name = name;
         this.dates = dates;
         this.notes = notes;
-        this.subItem = subItem;
-        this.category = category;
+        this.subItem = [];
+        this.category = [];
     }
 }
 
@@ -36,7 +37,7 @@ function eventLibrary (){
         return input.value;
     });
     const noteField = document.querySelector('#info').value;
-    formInputs.push(noteField);
+    formInputs.push(document.querySelector('#info').value);
     console.log(formInputs);
 }
 
