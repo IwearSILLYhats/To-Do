@@ -23,9 +23,10 @@ function toggleEvents(){
 
 
 class ListItem {
-    constructor(name, dates, notes){
+    constructor(name, dates, time, notes){
         this.name = name;
         this.dates = dates;
+        this.time = time;
         this.notes = notes;
         this.subItem = [];
         this.category = [];
@@ -33,12 +34,20 @@ class ListItem {
 }
 
 function eventLibrary (){
-    const formInputs = [...document.querySelectorAll('.newEvent input')].map((input) => {
-        return input.value;
+    let library = [];
+    const submitBtn = document.querySelector('#submitBtn');
+    const eventForm = document.querySelector('.newEvent');
+
+    submitBtn.addEventListener('click', (e) => {
+        addToLibrary();
     });
-    const noteField = document.querySelector('#info').value;
-    formInputs.push(document.querySelector('#info').value);
-    console.log(formInputs);
+
+    function addToLibrary (){
+        const formInputs = [...document.querySelectorAll('.newEvent input, .newEvent textarea')].map((input) => { return input.value });
+        library.push(new ListItem(formInputs[0], formInputs[1], formInputs[2], formInputs[3]));
+        eventForm.reset();
+        console.log(library);
+    }
 }
 
 
