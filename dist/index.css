@@ -105,6 +105,9 @@ input[type="checkbox"]{
     width: 0;
     height: 0;
 }
+.list label{
+    margin-top: .5rem;
+}
 .list, .list > div, .list div label{
     width: 100%;
     display: flex;
@@ -124,7 +127,9 @@ input[type="checkbox"]{
     content: ' || ';
 }
 li{
+    font-size: 60%;
     padding-left: 1rem;
+    list-style: none;
 }
 footer {
     border-top: 1px solid rgba(211, 211, 211, .5);

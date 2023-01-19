@@ -1,4 +1,4 @@
-function toggleEvents(){
+(function toggleEvents(){
     const darkModeToggle = document.getElementById('darkMode');
     const page = document.querySelector('html');
     const newBtn = document.querySelector('.new');
@@ -19,13 +19,13 @@ function toggleEvents(){
     newBtn.addEventListener('click', (e) => {
         classToggle(eventForm, 'hidden');
     });
-}
+})();
 
 
 class ListItem {
     constructor(name, dates, time, notes){
         this.name = name;
-        this.dates = dates;
+        this.date = dates;
         this.time = time;
         this.notes = notes;
         this.subItem = [];
@@ -33,8 +33,11 @@ class ListItem {
     }
 }
 
-function eventLibrary (){
-    let library = [];
+(function eventLibrary (){
+    let library = [{
+        name: 'TestName',
+        date: '3/19/1991'
+    }];
     const submitBtn = document.querySelector('#submitBtn');
     const eventForm = document.querySelector('.newEvent');
 
@@ -44,12 +47,27 @@ function eventLibrary (){
 
     function addToLibrary (){
         const formInputs = [...document.querySelectorAll('.newEvent input, .newEvent textarea')].map((input) => { return input.value });
-        library.push(new ListItem(formInputs[0], formInputs[1], formInputs[2], formInputs[3]));
+        const newItem = new ListItem(formInputs[0], formInputs[1], formInputs[2], formInputs[3])
+        library.push(newItem);
+        buildNav(library);
         eventForm.reset();
-        console.log(library);
     }
+})();
+
+function buildNav (library){
+    const categories = [...document.querySelectorAll('ul')];
+    categories.forEach( element => removeChildren(element));
+    function removeChildren(parent){
+        while (parent.firstChild){
+            parent.removeChild(parent.firstChild);
+        }
+    }
+    function addChild (parent, eventItem){
+        const child = document.createElement('li');
+        child.textContent = `${eventItem.name} - ${eventItem.date}`;
+        parent.appendChild(child);
+    }
+        library.forEach((newItem) => { 
+            addChild(categories[0], newItem);
+        });
 }
-
-
-toggleEvents();
-eventLibrary();
