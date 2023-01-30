@@ -127,6 +127,9 @@ input[type="checkbox"]{
     content: ' || ';
 }
 li{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     font-size: 60%;
     padding-left: 1rem;
     list-style: none;

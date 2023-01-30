@@ -1,3 +1,4 @@
+import { formatDistanceToNow, format, add, getMonth, getDate, getYear } from "date-fns";
 (function toggleEvents(){
     const darkModeToggle = document.getElementById('darkMode');
     const page = document.querySelector('html');
@@ -25,7 +26,7 @@
 class ListItem {
     constructor(name, dates, time, notes){
         this.name = name;
-        this.date = dates;
+        this.date = add(new Date (dates), {days: 1});
         this.time = time;
         this.notes = notes;
         this.subItem = [];
@@ -36,8 +37,13 @@ class ListItem {
 (function eventLibrary (){
     let library = [{
         name: 'TestName',
-        date: '3/19/1991'
-    }];
+        date: new Date(1969, 7, 9)
+    },
+    {
+        name: 'OtherTestName',
+        date: new Date(2002, 11, 12)
+    }    
+];
     const submitBtn = document.querySelector('#submitBtn');
     const eventForm = document.querySelector('.newEvent');
 
@@ -49,12 +55,15 @@ class ListItem {
         const formInputs = [...document.querySelectorAll('.newEvent input, .newEvent textarea')].map((input) => { return input.value });
         const newItem = new ListItem(formInputs[0], formInputs[1], formInputs[2], formInputs[3])
         library.push(newItem);
-        buildNav(library);
+        console.log(library);
         eventForm.reset();
+        buildNav(library);
     }
+    buildNav(library);
 })();
 
 function buildNav (library){
+    console.log(library);
     const categories = [...document.querySelectorAll('ul')];
     categories.forEach( element => removeChildren(element));
     function removeChildren(parent){
@@ -63,8 +72,14 @@ function buildNav (library){
         }
     }
     function addChild (parent, eventItem){
+        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         const child = document.createElement('li');
-        child.textContent = `${eventItem.name} - ${eventItem.date}`;
+        const nameField = document.createElement('p');
+        nameField.textContent = eventItem.name;
+        child.appendChild(nameField);
+        const dateField = document.createElement('p');
+        dateField.textContent = `${months[getMonth(eventItem.date)]} ${getDate(eventItem.date)}, ${getYear(eventItem.date)}`;
+        child.appendChild(dateField);
         parent.appendChild(child);
     }
         library.forEach((newItem) => { 
