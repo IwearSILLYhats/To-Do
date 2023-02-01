@@ -1,4 +1,6 @@
 import { formatDistanceToNow, format, add, getMonth, getDate, getYear } from "date-fns";
+
+// manages any events on the page that requires a class to be toggled
 (function toggleEvents(){
     const darkModeToggle = document.getElementById('darkMode');
     const page = document.querySelector('html');
@@ -22,28 +24,25 @@ import { formatDistanceToNow, format, add, getMonth, getDate, getYear } from "da
     });
 })();
 
-
+// constructor for event list items, days need to have one added due to how they are indexed when converting from date input to Date objects
 class ListItem {
     constructor(name, dates, time, notes){
         this.name = name;
-        this.date = add(new Date (dates), {days: 1});
-        this.time = time;
+        this.date = new Date (dates);
         this.notes = notes;
         this.subItem = [];
         this.category = [];
     }
+    get getMDY() {
+            let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return `${months[getMonth(this.date)]} ${getDate(this.date)}, ${getYear(this.date)}`; }
 }
 
+// houses the event library object and any functions manipulating it.
 (function eventLibrary (){
-    let library = [{
-        name: 'TestName',
-        date: new Date(1969, 7, 9)
-    },
-    {
-        name: 'OtherTestName',
-        date: new Date(2002, 11, 12)
-    }    
-];
+    let library = [new ListItem ('TestName', new Date(1969, 7, 9), 'No notes'),
+     new ListItem ('OtherTestName', new Date(2002, 11, 12), 'No Notes')];
+    
     const submitBtn = document.querySelector('#submitBtn');
     const eventForm = document.querySelector('.newEvent');
 
@@ -53,9 +52,8 @@ class ListItem {
 
     function addToLibrary (){
         const formInputs = [...document.querySelectorAll('.newEvent input, .newEvent textarea')].map((input) => { return input.value });
-        const newItem = new ListItem(formInputs[0], formInputs[1], formInputs[2], formInputs[3])
+        const newItem = new ListItem(formInputs[0], formInputs[1], formInputs[2])
         library.push(newItem);
-        console.log(library);
         eventForm.reset();
         buildNav(library);
     }
@@ -72,13 +70,12 @@ function buildNav (library){
         }
     }
     function addChild (parent, eventItem){
-        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         const child = document.createElement('li');
         const nameField = document.createElement('p');
         nameField.textContent = eventItem.name;
         child.appendChild(nameField);
         const dateField = document.createElement('p');
-        dateField.textContent = `${months[getMonth(eventItem.date)]} ${getDate(eventItem.date)}, ${getYear(eventItem.date)}`;
+        dateField.textContent = eventItem.getMDY;
         child.appendChild(dateField);
         parent.appendChild(child);
     }
