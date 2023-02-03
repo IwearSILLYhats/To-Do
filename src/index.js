@@ -60,6 +60,7 @@ class ListItem {
     buildNav(library);
 })();
 
+// Clears existing li dom elements then generates new ones that correspond to library items, categorized by time between current date and event date
 function buildNav (library){
     console.log(library);
     const categories = [...document.querySelectorAll('ul')];
@@ -79,7 +80,16 @@ function buildNav (library){
         child.appendChild(dateField);
         parent.appendChild(child);
     }
-        library.forEach((newItem) => { 
-            addChild(categories[0], newItem);
+        library.forEach((newItem) => {
+            const msToDays = 1000*60*60*24;
+            let dayDifference = Math.floor((new Date(newItem.date) - Date.now())/msToDays);
+            let category = dayDifference < 0 ? 5
+                        : dayDifference <= 1 ? 0
+                        : dayDifference <= 7 ? 1
+                        : dayDifference <= 30 ? 2
+                        : 3;
+            console.log(dayDifference);
+            addChild(categories[category], newItem);
         });
 }
+// categorizer code in the buildNav function needs functionality for non-date-specific events
