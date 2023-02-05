@@ -28,7 +28,8 @@ import { formatDistanceToNow, format, add, getMonth, getDate, getYear } from "da
 class ListItem {
     constructor(name, dates, time, notes){
         this.name = name;
-        this.date = new Date (dates);
+        console.log(dates);
+        this.date = dates ? new Date (dates) : 'Anytime';
         this.notes = notes;
         this.subItem = [];
         this.category = [];
@@ -75,15 +76,18 @@ function buildNav (library){
         const nameField = document.createElement('p');
         nameField.textContent = eventItem.name;
         child.appendChild(nameField);
-        const dateField = document.createElement('p');
-        dateField.textContent = eventItem.getMDY;
-        child.appendChild(dateField);
+        if (eventItem.date !== 'Anytime'){
+            const dateField = document.createElement('p');
+            dateField.textContent = eventItem.getMDY;
+            child.appendChild(dateField);
+        }
         parent.appendChild(child);
     }
         library.forEach((newItem) => {
             const msToDays = 1000*60*60*24;
-            let dayDifference = Math.floor((new Date(newItem.date) - Date.now())/msToDays);
-            let category = dayDifference < 0 ? 5
+            let dayDifference = (new Date(newItem.date) - Date.now())/msToDays;
+            let category = newItem.date === 'Anytime' ? 4
+                        : dayDifference < 0 ? 5
                         : dayDifference <= 1 ? 0
                         : dayDifference <= 7 ? 1
                         : dayDifference <= 30 ? 2
@@ -92,4 +96,3 @@ function buildNav (library){
             addChild(categories[category], newItem);
         });
 }
-// categorizer code in the buildNav function needs functionality for non-date-specific events
