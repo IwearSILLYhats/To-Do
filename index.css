@@ -57,13 +57,11 @@ body > :nth-child(odd){
     color: var(--secondary-text);
 }
 .nav{
+    overflow: hidden;
     height: 100%;
     display: flex;
     flex-direction: column;
     padding: .5rem .5rem 0 .5rem;
-}
-.main{
-    width: 3fr;
 }
 .switch{
     position: relative;
@@ -109,6 +107,9 @@ input[type="checkbox"]{
     margin-top: .5rem;
 }
 .list, .list > div, .list div label{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -133,6 +134,12 @@ li{
     font-size: 60%;
     padding-left: 1rem;
     list-style: none;
+}
+li p{
+    max-width: 60%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 footer {
     border-top: 1px solid rgba(211, 211, 211, .5);
