@@ -1,4 +1,4 @@
-import { formatDistanceToNow, format, add, getMonth, getDate, getYear, getHours, getMinutes } from "date-fns";
+import { formatDistanceToNow, format, add, getMonth, getDate, getYear, getHours, getMinutes, parseJSON } from "date-fns";
 
 // manages any events on the page that requires a class to be toggled
 (function toggleEvents(){
@@ -25,36 +25,52 @@ import { formatDistanceToNow, format, add, getMonth, getDate, getYear, getHours,
     });
 })();
 
-// constructor for event list items, days need to have one added due to how they are indexed when converting from date input to Date objects
-class ListItem {
-    constructor(name, dates, notes){
-        this.name = name;
-        this.date = dates ? new Date (dates) : 'Anytime';
-        this.notes = notes;
-        this.subItem = [];
-        this.category = [];
-    }
-    get getMDY() {
-            let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            return `${months[getMonth(this.date)]} ${getDate(this.date)}, ${getYear(this.date)}`; }
-    get getHoursMins () {
-        let hours = getHours(this.date);
-        let minutes = getMinutes(this.date);
-        let ampm = 'am';
-        if(hours > 12){
-            hours -= 12;
-            ampm = 'pm';
-        }
-        hours = (hours.length === 2) ? hours : `0${hours}`;
-        minutes = (minutes.length === 2) ? minutes : `0${minutes}`;
-        return hours +":" + minutes + ampm;
-    }
-}
-
-// houses the event library object and any functions manipulating it.
 (function eventLibrary (){
-    let library = [new ListItem ('TestName', new Date(1969, 7, 9), ''),
-     new ListItem ('OtherTestName', new Date(2002, 11, 12), 'Some notes and maybe even some stupid thoughts on how this friggin app should proceed!')];
+        // constructor for event list items, days need to have one added due to how they are indexed when converting from date input to Date objects
+        class ListItem {
+            constructor(name, dates, notes, subItem, category){
+                this.name = name;
+                this.date = dates ? new Date (dates): 'Anytime';
+                this.notes = notes;
+                this.subItem = subItem ?? [];
+                this.category = category ?? [];
+            }
+            get testShit() {
+                return this.name;
+            }
+            get getMDY() {
+                    let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                    return `${months[getMonth(this.date)]} ${getDate(this.date)}, ${getYear(this.date)}`; }
+            get getHoursMins () {
+                let hours = getHours(this.date);
+                let minutes = getMinutes(this.date);
+                let ampm = 'am';
+                if(hours > 12){
+                    hours -= 12;
+                    ampm = 'pm';
+                }
+                if(String(hours).length == 1) {hours = `0${hours}`};
+                if(String(minutes).length == 1) {minutes =`0${minutes}`};
+                return hours +":" + minutes + ampm;
+            }
+            updateData (input, field){ this[field] = input;
+                                buildNav(library);}
+        }
+
+    //Data object that holds event data, feeds to and from localstorage
+
+     let library = [];
+        if(localStorage.getItem('library')){
+            let temp = JSON.parse(localStorage.getItem('library'));
+            library = temp.map((e) => {
+            return new ListItem(e.name, Date.parse(e.date), e.notes, e.subItem, e.category);
+        });
+        };
+
+     function updateStorage (){
+        localStorage.setItem('library', JSON.stringify(library));
+        console.log(JSON.parse(localStorage.getItem('library')));
+     }
     
     const submitBtn = document.querySelector('#submitBtn');
     const eventForm = document.querySelector('.newEvent');
@@ -68,14 +84,15 @@ class ListItem {
         const newItem = new ListItem(formInputs[0], formInputs[1], formInputs[2])
         library.push(newItem);
         eventForm.reset();
+        updateStorage();
         buildNav(library);
     }
+
     buildNav(library);
 })();
 
 // Clears existing li dom elements then generates new ones that correspond to library items, categorized by time between current date and event date
 function buildNav (library){
-    console.log(library);
     const categories = [...document.querySelectorAll('ul')];
     categories.forEach( element => removeChildren(element));
     function removeChildren(parent){
@@ -125,11 +142,20 @@ function buildContent (eventItem){
     }
     function elementBuilder(parent, data, element){
         const child = document.createElement(element);
-        child.textContent = data;
+        if(Array.isArray(data)){
+            data.forEach((point) => {
+                elementBuilder(child, point, 'li');
+            })
+        }
+        else{
+            child.textContent = data;
+        }
         parent.appendChild(child);
     }
+    console.log(eventItem.testShit);
     elementBuilder(main, eventItem.name, 'h1');
-    elementBuilder(main, `${eventItem.getMDY} ${eventItem.getHoursMins}`, 'h3');
+    elementBuilder(main, eventItem.date === 'Anytime' ? eventItem.date : `${eventItem.getMDY} ${eventItem.getHoursMins}`, 'h3');
     elementBuilder(main, eventItem.notes, 'p');
+    elementBuilder(main, eventItem.subItem, 'ul');
 
 }
