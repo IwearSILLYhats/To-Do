@@ -114,10 +114,16 @@ input[type="checkbox"]{
     display: flex;
     flex-direction: column;
 }
-.list input + ul{
-    display: none;
+.list input ~ ul{
+    overflow: hidden;
+    max-height: 0rem;
+    border: none;
+    transition: max-height .3s ease-in-out;
 }
-.list div input:checked + ul{
+.list div input:checked ~ ul{
+    max-height: calc(100%);
+    overflow: scroll;
+    transition: max-height .3s ease-in-out;
     display: block;
 }
 .list label:hover, .list label:focus, .list li:hover{
@@ -125,7 +131,13 @@ input[type="checkbox"]{
     border-radius: 3px;
 }
 .list span::before{
+    margin: .5rem;
+    display: inline-block;
     content: ' || ';
+    transition: transform .3s ease-in-out;
+}
+input[type='checkbox']:checked ~ label span::before{
+    transform: rotate(90deg);
 }
 li{
     display: flex;
@@ -186,4 +198,12 @@ footer button:hover{
 }
 textarea{
     resize: none;
+}
+.main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    margin: 1rem 20%;
 }
