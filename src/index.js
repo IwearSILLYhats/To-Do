@@ -38,6 +38,9 @@ import { formatDistanceToNow, format, add, getMonth, getDate, getYear, getHours,
             get testShit() {
                 return this.name;
             }
+            get formatDate (){
+                return `${this.getMDY} ${this.getHoursMins}`;
+            }
             get getMDY() {
                     let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
                     return `${months[getMonth(this.date)]} ${getDate(this.date)}, ${getYear(this.date)}`; }
@@ -137,25 +140,43 @@ function buildNav (library){
 // Clears main content element, then dynamically generates new elements based on the content of eventItem that was clicked
 function buildContent (eventItem){
     const main = document.querySelector('.main');
+    const components = [
+        [main, eventItem.name, 'h1'], 
+        [main, eventItem.date === 'Anytime' ? eventItem.date : eventItem.formatDate, 'h3'], 
+        [main, eventItem.notes, 'p'], 
+        [main, eventItem.subItem, 'ul']];
+
     while (main.firstChild){
         main.removeChild(main.firstChild);
     }
     function elementBuilder(parent, data, element){
+        const label = document.createElement('label');
         const child = document.createElement(element);
+        const fieldType = (data === 
+            eventItem.date || data === eventItem.formatDate) ? ['input', 'datetime-local'] :
+            data === eventItem.notes ? ['textarea'] :
+            ['input', 'text'];
+        const editField = document.createElement(fieldType[0]);
+        if(fieldType[1]){
+            editField.setAttribute('type', fieldType[1])
+        };
+
         if(Array.isArray(data)){
             data.forEach((point) => {
                 elementBuilder(child, point, 'li');
             })
         }
         else{
+            editField.value = data;
             child.textContent = data;
         }
-        parent.appendChild(child);
+        label.appendChild(child);
+        label.appendChild(editField);
+        parent.appendChild(label);
     }
-    console.log(eventItem.testShit);
-    elementBuilder(main, eventItem.name, 'h1');
-    elementBuilder(main, eventItem.date === 'Anytime' ? eventItem.date : `${eventItem.getMDY} ${eventItem.getHoursMins}`, 'h3');
-    elementBuilder(main, eventItem.notes, 'p');
-    elementBuilder(main, eventItem.subItem, 'ul');
+
+ components.forEach((item) => {
+    elementBuilder(...item);
+ });
 
 }
