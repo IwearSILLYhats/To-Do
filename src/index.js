@@ -152,31 +152,48 @@ function buildContent (eventItem){
     function elementBuilder(parent, data, element){
         const label = document.createElement('label');
         const child = document.createElement(element);
-        const fieldType = (data === 
-            eventItem.date || data === eventItem.formatDate) ? ['input', 'datetime-local'] :
-            data === eventItem.notes ? ['textarea'] :
-            ['input', 'text'];
-        const editField = document.createElement(fieldType[0]);
-        if(fieldType[1]){
-            editField.setAttribute('type', fieldType[1])
-        };
-
+        // Checks if data is an array, if so runs elementBuilder again on array indexes, if not adds event listener so that changes to input change the text element
         if(Array.isArray(data)){
             data.forEach((point) => {
                 elementBuilder(child, point, 'li');
-            })
+            });
         }
         else{
+            const fieldType = (data === 
+                eventItem.date || data === eventItem.formatDate) ? ['input', 'datetime-local'] :
+                data === eventItem.notes ? ['textarea'] :
+                ['input', 'text'];
+            const editField = document.createElement(fieldType[0]);
+            if(fieldType[1]){
+                editField.setAttribute('type', fieldType[1])
+            };
+            editField.addEventListener('input', (e) => {
+                if(e.type === 'datetime-local'){
+                    child.textContent = new Date(e.target.value);
+                }
+                else{
+                    child.textContent = e.target.value;
+                }
+            })
             editField.value = data;
-            child.textContent = data;
+            child.textContent = data ?? 'New Item';
+            label.appendChild(editField);
         }
         label.appendChild(child);
-        label.appendChild(editField);
         parent.appendChild(label);
+        return child;
     }
 
  components.forEach((item) => {
     elementBuilder(...item);
  });
-
+ const addBtn = document.createElement('button');
+ addBtn.type = 'button';
+ addBtn.textContent = 'Add Subitem';
+ addBtn.addEventListener('click', (e) => {
+     eventItem.subItem.push('');
+     const subItemList = document.querySelector('.main ul')
+     elementBuilder(subItemList, eventItem.subItem[eventItem.subItem.length-1], 'li');
+ });
+ main.appendChild(addBtn);
 }
