@@ -175,8 +175,8 @@ function buildContent (eventItem){
                     child.textContent = e.target.value;
                 }
             })
-            editField.value = data;
-            child.textContent = data ?? 'New Item';
+            editField.value = data == '' ? 'New Item' : data;
+            child.textContent = data == '' ? 'New Item' : data;
             label.appendChild(editField);
         }
         label.appendChild(child);
