@@ -25,7 +25,7 @@ import { formatDistanceToNow, format, add, getMonth, getDate, getYear, getHours,
     });
 })();
 
-(function eventLibrary (){
+const eventLibrary = (function(){
         // constructor for event list items, days need to have one added due to how they are indexed when converting from date input to Date objects
         class ListItem {
             constructor(name, dates, notes, subItem, category){
@@ -34,9 +34,6 @@ import { formatDistanceToNow, format, add, getMonth, getDate, getYear, getHours,
                 this.notes = notes;
                 this.subItem = subItem ?? [];
                 this.category = category ?? [];
-            }
-            get testShit() {
-                return this.name;
             }
             get formatDate (){
                 return `${this.getMDY} ${this.getHoursMins}`;
@@ -56,8 +53,12 @@ import { formatDistanceToNow, format, add, getMonth, getDate, getYear, getHours,
                 if(String(minutes).length == 1) {minutes =`0${minutes}`};
                 return hours +":" + minutes + ampm;
             }
-            updateData (input, field){ this[field] = input;
-                                buildNav(library);}
+            updateData (input, field, index){ 
+                if (field === 'subItem') {this[field][index] = input;}
+                else{this[field] = input;}
+                if (field === 'name' || field === 'date'){
+                    buildNav(library);
+                }}
         }
 
     //Data object that holds event data, feeds to and from localstorage
@@ -92,6 +93,12 @@ import { formatDistanceToNow, format, add, getMonth, getDate, getYear, getHours,
     }
 
     buildNav(library);
+
+    return {
+        updateLocal: function () {
+            updateStorage();
+            }
+        };
 })();
 
 // Clears existing li dom elements then generates new ones that correspond to library items, categorized by time between current date and event date
@@ -141,39 +148,46 @@ function buildNav (library){
 function buildContent (eventItem){
     const main = document.querySelector('.main');
     const components = [
-        [main, eventItem.name, 'h1'], 
-        [main, eventItem.date === 'Anytime' ? eventItem.date : eventItem.formatDate, 'h3'], 
-        [main, eventItem.notes, 'p'], 
-        [main, eventItem.subItem, 'ul']];
+        [main, eventItem.name, 'h1', 'name'], 
+        [main, eventItem.date === 'Anytime' ? eventItem.date : eventItem.formatDate, 'h3', 'date'], 
+        [main, eventItem.notes, 'p', 'notes'], 
+        [main, eventItem.subItem, 'ul', 'subItem']];
 
     while (main.firstChild){
         main.removeChild(main.firstChild);
     }
-    function elementBuilder(parent, data, element){
+    function elementBuilder(parent, data, element, types, index){
         const label = document.createElement('label');
         const child = document.createElement(element);
         // Checks if data is an array, if so runs elementBuilder again on array indexes, if not adds event listener so that changes to input change the text element
         if(Array.isArray(data)){
-            data.forEach((point) => {
-                elementBuilder(child, point, 'li');
+            data.forEach((point, index) => {
+                elementBuilder(child, point, 'li', 'subItem', index);
             });
         }
         else{
-            const fieldType = (data === 
-                eventItem.date || data === eventItem.formatDate) ? ['input', 'datetime-local'] :
-                data === eventItem.notes ? ['textarea'] :
+            const fieldType = types === 'date' ? ['input', 'datetime-local'] :
+            types === 'notes' ? ['textarea'] :
                 ['input', 'text'];
             const editField = document.createElement(fieldType[0]);
             if(fieldType[1]){
                 editField.setAttribute('type', fieldType[1])
             };
-            editField.addEventListener('input', (e) => {
-                if(e.type === 'datetime-local'){
-                    child.textContent = new Date(e.target.value);
+            editField.addEventListener('change', (e) => {
+                if(types === 'date'){
+                    eventItem.updateData((data ? new Date (e.target.value): 'Anytime'), types);
+                    child.textContent = eventItem.date === 'Anytime' ? 'Anytime' : eventItem.formatDate;
+                }
+                else if(types === 'subItem') {
+                    eventItem.updateData(e.target.value, types, index);
+                    child.textContent = e.target.value;
+
                 }
                 else{
+                    eventItem.updateData(e.target.value, types)
                     child.textContent = e.target.value;
                 }
+                eventLibrary.updateLocal();
             })
             editField.value = data == '' ? 'New Item' : data;
             child.textContent = data == '' ? 'New Item' : data;
@@ -189,11 +203,12 @@ function buildContent (eventItem){
  });
  const addBtn = document.createElement('button');
  addBtn.type = 'button';
- addBtn.textContent = 'Add Subitem';
+ addBtn.textContent = 'Add Sub-item';
  addBtn.addEventListener('click', (e) => {
      eventItem.subItem.push('');
-     const subItemList = document.querySelector('.main ul')
-     elementBuilder(subItemList, eventItem.subItem[eventItem.subItem.length-1], 'li');
+     const subItemList = document.querySelector('.main ul');
+     elementBuilder(subItemList, eventItem.subItem[eventItem.subItem.length-1], 'li', `subItem`, eventItem.subItem.length-1);
+     
  });
  main.appendChild(addBtn);
 }
