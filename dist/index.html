@@ -10,10 +10,6 @@
 <body>
     <div class="nav">
         <p class="logo">POSTpone</p>
-        <label for="darkMode" class="switch">
-            <input type="checkbox" name="darkMode" id="darkMode">
-            <span class="slider"></span>
-        </label>
         <input type="search" placeholder="Search">
         <div class="list">
             <div>
@@ -74,7 +70,7 @@
     <div class="main"></div>
     <footer>
         <button type='button' class="new">+ New List</button>
-        <button class="options">Options</button>
+        <button type='button' class="optionBtn">Options</button>
         <form class="newEvent hidden" action="">
             <label for="name">Name</label>
             <input type="text" name="name" id="name">
@@ -86,6 +82,23 @@
                 <button type="button" id="submitBtn">Submit</button>
                 <button type="reset">Clear</button>
             </div>
+        </form>
+        <form class="options hidden" action="">
+            <div>
+                <label for="darkMode" class="switch">
+                    <input type="checkbox" name="darkMode" id="darkMode">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div>
+                <fieldset>
+                    <label for="alphabetical">A-Z</label>
+                    <input type="radio" name="sort" id="alphabetical">
+                    <label for="chronological">Date</label>
+                    <input type="radio" name="sort" id="chronological">
+                </fieldset>
+            </div>
+            <div></div>
         </form>
     </footer>
     <footer class="main"></footer>
