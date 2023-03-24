@@ -139,6 +139,9 @@ input[type="checkbox"]{
 input[type='checkbox']:checked ~ label span::before{
     transform: rotate(90deg);
 }
+.search{
+    margin-top: 1rem;
+}
 .nav li{
     position: relative;
     display: flex;

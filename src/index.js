@@ -1,4 +1,5 @@
 import { formatDistanceToNow, format, add, getMonth, getDate, getYear, getHours, getMinutes, parseJSON } from "date-fns";
+import { it } from "date-fns/locale";
 
 // manages any events on the page that requires a class to be toggled
 (function toggleEvents(){
@@ -39,6 +40,24 @@ import { formatDistanceToNow, format, add, getMonth, getDate, getYear, getHours,
         classToggle(options, 'hidden');
     });
 })();
+
+const searchBar = document.querySelector('.search')
+searchBar.addEventListener('input', (query) => {
+    filterList(query);
+});
+function filterList (query){
+    const queryTerm = query.target.value;
+    const itemList = [...document.querySelectorAll('.list li')];
+    itemList.forEach((e) => {
+        const nameText = e.querySelector('p');
+        if (!nameText.textContent.toLowerCase().includes(queryTerm.toLowerCase())){
+            e.classList.add('hidden');
+        }
+        else{
+            e.classList.remove('hidden');
+        }
+    });
+}
 
 const eventLibrary = (function(){
         // constructor for event list items, days need to have one added due to how they are indexed when converting from date input to Date objects
@@ -122,6 +141,43 @@ const eventLibrary = (function(){
         buildNav(library);
     }
 
+    const sortBtns = [...document.querySelectorAll('input[type="radio"]')];
+    sortBtns.forEach( (btn) => {
+        btn.addEventListener('change', (e) =>{
+            sortLibrary(e.target);
+        });
+    });
+
+    function sortLibrary (target) {
+        if (target.id === 'alphabetical'){
+            console.log('namesort');
+            library = library.sort(function abcSort(a,b) {
+                let aname = a.name.toLowerCase();
+                let bname = b.name.toLowerCase();
+                if (aname > bname) {
+                    return 1;
+                }
+                if (bname > aname) {
+                    return -1;
+                }
+                return 0;
+            })
+        }
+        else if (target.id === 'chronological'){
+            console.log('datesort');
+            library = library.sort(function dateSort(a,b) {
+                if (a.date > b.date) {
+                    return 1;
+                }
+                if (b.date > a.date) {
+                    return -1;
+                }
+                return 0;
+            })
+        }
+        buildNav(library);
+        updateStorage();
+    }
     buildNav(library);
 
     return {
